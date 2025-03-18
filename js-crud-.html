@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        button {
+            cursor: pointer;
+            padding: 5px 10px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>CRUD Table with JavaScript</h2>
+
+    <form id="crudForm">
+        <input type="hidden" id="rowIndex">
+        <input type="text" id="name" placeholder="Enter Name" required>
+        <input type="text" id="email" placeholder="Enter Email" required>
+        <button type="submit">Add/Update</button>
+    </form>
+
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById('crudForm').addEventListener('submit',function(e){
+            e.preventDefault();
+            let name = document.getElementById('name').value;
+            let email = document.getElementById('email').value;
+            let rowIndex = document.getElementById('rowIndex').value;
+            if(rowIndex==""){
+              addRow(name, email);
+            }else{
+              updateRow(rowIndex,name,email);
+            }
+            document.getElementById('crudForm').reset();
+            document.getElementById('rowIndex').value = '';
+            
+            
+            
+        })
+
+        function addRow(name, email) {
+            let table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            let newRow = table.insertRow();
+            
+            newRow.insertCell(0).textContent = name;
+            newRow.insertCell(1).textContent = email;
+            
+            let actionsCell = newRow.insertCell(2);
+            actionsCell.innerHTML = `<button onclick="editRow(this)">Edit</button>
+                                     <button onclick="deleteRow(this)">Delete</button>`;
+        }
+
+        function editRow(button) {
+            let row = button.parentElement.parentElement;
+            let cells = row.getElementsByTagName('td');
+
+            document.getElementById('name').value = cells[0].textContent;
+            document.getElementById('email').value = cells[1].textContent;
+            document.getElementById('rowIndex').value = row.rowIndex - 1;
+        }
+
+        function updateRow(index, name, email) {
+            let table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            let row = table.rows[index];
+            row.cells[0].textContent = name;
+            row.cells[1].textContent = email;
+        }
+
+        function deleteRow(button) {
+            let row = button.parentElement.parentElement;
+            row.parentElement.removeChild(row);
+        }
+    </script>
+
+</body>
+</html>
